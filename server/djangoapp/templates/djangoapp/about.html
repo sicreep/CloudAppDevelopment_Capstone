@@ -1,0 +1,14 @@
+{% extends "djangoapp/base_generic.html" %}
+
+{% block content %}
+    <h1 class="display-1">
+        About us
+    </h1>
+
+    <p class="lead">Welcome to Best Cars dealership</p>
+    <p class="lead">
+        Home to the best cars in North America. We sell domestic and imported cars at reasonable prices.
+    </p>
+ <p><a href="{% url 'djangoapp:contact' %}"">Contact us</a></p>
+
+{% endblock %}
