@@ -23,9 +23,14 @@ async function main(params) {
             selector: selector,
             fields: ["id","city","state","st","address","zip","lat","long"],
         });
+        
+        if (docList.result.docs.length == 0) {
+            return { "statusCode" : 404 }
+        }
+        
         return { "dealerships" : docList.result };
 
     } catch (error) {
-        return { error: error.description };
+        return { "statusCode" : 500 };
     }
 }
