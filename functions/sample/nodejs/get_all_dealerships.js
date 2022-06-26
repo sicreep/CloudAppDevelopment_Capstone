@@ -9,9 +9,13 @@ async function main(params) {
     
     cloudant.setServiceUrl(params.COUCH_URL);
     
-    selector = {
-        // empty for all dealerships
-    };
+    if (params.state) {
+        selector = {
+            "st": params.state
+        };
+    } else {
+        selector = {};
+    }
 
     try {
         let docList = await cloudant.postFind({
