@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 from .models import CarMake, CarModel
-from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf
+from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -34,13 +34,11 @@ def contact(request):
 def login_request(request):
     context = {}
     if request.method == "POST":
-        print("foasdo")
         username = request.POST['username']
         password = request.POST['psw']
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            print("foo")
             return redirect('djangoapp:index')
         else:
             context['message'] = "Invalid username or password."
@@ -106,5 +104,21 @@ def get_dealer_details(request, dealer_id):
 
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
-# ...
+def add_review(request, dealer_id):
+    user = request.user
+    url = 'https://4eb88eae.eu-de.apigw.appdomain.cloud/api/review'
 
+    # if request.method == "POST" and user.is_authenticated:
+    if request.method == "POST":
+        review = dict()
+        review['name'] = 'Lord Foo Bar'
+        review["time"] = datetime.utcnow().isoformat()
+        review["dealership"] = 15
+        review["review"] = "This is a great car dealer"
+
+        json_payload = dict()
+        json_payload['review'] = review
+        response = post_request(url, json_payload, dealerId=dealer_id)
+        return HttpResponse(response)
+    else:
+        return HttpResponse("nope")

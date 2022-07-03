@@ -94,12 +94,13 @@ class DealerReview:
         self.name = kwargs['name']
         self.dealership = kwargs['dealership']
         self.review = kwargs['review']
-        self.purchase = kwargs['purchase']
-        if kwargs['purchase'] == 'true':
-            self.purchase_date = kwargs['purchase_date']
-            self.car_make = kwargs['car_make']
-            self.car_model = kwargs['car_model']
-            self.car_year = kwargs['car_year']
+        if 'purchase' in kwargs:
+            self.purchase = kwargs['purchase']
+            if kwargs['purchase'] == 'true':
+                self.purchase_date = kwargs['purchase_date']
+                self.car_make = kwargs['car_make']
+                self.car_model = kwargs['car_model']
+                self.car_year = kwargs['car_year']
         self.sentiment = kwargs['sentiment']
 
     def __str__(self):
