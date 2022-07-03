@@ -8,16 +8,24 @@ def main(dict):
         service = CloudantV1(authenticator=authenticator)
         service.set_service_url(dict['URL'])
     
-        review_doc = Document(
-            name = dict['review']['name'],
-            dealership = int(dict['review']['dealership']),
-            review = dict['review']['review'],
-            purchase = dict['review']['purchase'],
-            purchase_date = dict['review']['purchase_date'],
-            car_make = dict['review']['car_make'],
-            car_model = dict['review']['car_model'],
-            car_year = dict['review']['car_year']
-        )
+        if 'purchase' in dict['review']:
+            if dict['review']['purchase'] == True:
+                 review_doc = Document(
+                    name = dict['review']['name'],
+                    dealership = int(dict['review']['dealership']),
+                    review = dict['review']['review'],
+                    purchase = dict['review']['purchase'],
+                    purchase_date = dict['review']['purchase_date'],
+                    car_make = dict['review']['car_make'],
+                    car_model = dict['review']['car_model'],
+                    car_year = dict['review']['car_year']
+                )
+        else: 
+            review_doc = Document(
+                name = dict['review']['name'],
+                dealership = int(dict['review']['dealership']),
+                review = dict['review']['review'],
+            )
     
         response = service.post_document(db='reviews', document=review_doc).get_result()
 
