@@ -20,15 +20,19 @@ def get_request(url, **kwargs):
             params["text"] = kwargs["text"]
             params["version"] = kwargs["version"]
             params["features"] = kwargs["features"]
+            params["language"] = kwargs["language"]
             params["return_analyzed_text"] = kwargs["return_analyzed_text"]
             response = requests.get(url, headers={'Content-Type': 'application/json'}, auth=HTTPBasicAuth('apikey', kwargs['apikey']),
                                     params=params)
+            if json.loads(response.text)['code'] == 422:
+                return {'sentiment': {'document':{'label':'none'}}}
         else:
             response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
-    except:
+    except Exception as err:
         # If any error occurs
         print("Network exception occurred")
+        print(err)
     
     status_code = response.status_code
     print("With status {} ".format(status_code))
@@ -114,7 +118,8 @@ def analyze_review_sentiments(dealerReview):
     text = dealerReview['review']
     version = '2022-04-07'
     feature = "sentiment"
+    language = 'en'
     return_analyzed_text = True
     
-    json_result = get_request(url, apikey=apikey, text=text, version=version, features=feature, return_analyzed_text=return_analyzed_text)
+    json_result = get_request(url, apikey=apikey, text=text, language=language, version=version, features=feature, return_analyzed_text=return_analyzed_text)
     return (json_result['sentiment']['document']['label'])
