@@ -91,16 +91,23 @@ class CarDealer:
 class DealerReview:
     # def __init__(self, name, dealership, review, purchase, purchase_date, car_make, car_model, car_year, sentiment):
     def __init__(self, **kwargs):
-        self.name = kwargs['name']
-        self.dealership = kwargs['dealership']
-        self.review = kwargs['review']
-        if 'purchase' in kwargs:
-            self.purchase = kwargs['purchase']
-            if kwargs['purchase'] == 'true':
-                self.purchase_date = kwargs['purchase_date']
-                self.car_make = kwargs['car_make']
-                self.car_model = kwargs['car_model']
-                self.car_year = kwargs['car_year']
+        self.name = kwargs['review']['name']
+        self.dealership = kwargs['review']['dealership']
+        self.review = kwargs['review']['review']
+        self.purchase = kwargs['review']['purchase']
+        
+        if 'purchase_date' in kwargs['review']:
+            self.purchase_date = kwargs['review']['purchase_date']
+        
+        if 'car_make' in kwargs['review']:
+            self.car_make = kwargs['review']['car_make']
+
+        if 'car_model' in kwargs['review']:
+            self.car_model = kwargs['review']['car_model']
+
+        if 'car_year' in kwargs['review']:
+            self.car_year = kwargs['review']['car_year']
+        
         self.sentiment = kwargs['sentiment']
 
     def __str__(self):

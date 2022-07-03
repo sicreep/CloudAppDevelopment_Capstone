@@ -1,18 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dealership Review</title>
-    {% load static %}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-</head>
+{% extends "djangoapp/base_generic.html" %}
 
-    <body>
+{% block content %}
 
-    <!--Add a nav bar here -->
+{% if user.is_authenticated %}
+<!-- TODO add review -->
+<!-- <a href=" url 'djangoapp:add_review' dealer.id "></a> -->
+{% endif %}
 
-    <!-- Add reviews as cards -->
+<div class="row row-cols-md-3 g-4">
+    {% for review in reviews %}
+    <div class="col">
+        <div class="card">
+            {% if review.sentiment == "positive" %}
+                <img class="card-img-left" style="width: 2rem; margin: 10px" src="{{MEDIA_URL}}/emoji/positive.png">
+            {% endif %}
+            {% if review.sentiment == "neutral" %}
+                <img class="card-img-left" style="width: 2rem; margin: 10px" src="{{MEDIA_URL}}/emoji/neutral.png">
+            {% endif %}
+            {% if review.sentiment == "negative" %}
+                <img class="card-img-left" style="width: 2rem; margin: 10px" src="{{MEDIA_URL}}/emoji/negative.png">
+            {% endif %}
+            <div class="card-body"> 
+                <h5 class="card-title">{{ review.name }}</h5>
+                <h6 class="card-title">{% if review.car_make %}{{ review.car_make }} {% endif %} {% if review.car_model %} {{ review.car_model }}, {% endif %} {{ review.car_year }}</h5>
+                <p class="card-text">{{ review.review }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% if not reviews %}
+        <p>No reviews available for this dealership.</p>
+    {% endif %}
 
-    </body>
+</div>
 
-</html>
+
+
+{% endblock %}

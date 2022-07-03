@@ -99,33 +99,21 @@ def get_dealer_reviews_from_cf(url, **kwargs):
     # Call get_request with a URL parameter
     json_result = get_request(url, dealerId=kwargs['dealerId'])
 
-    # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    # print(json_result)
-    # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print(json_result)
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
     if 'status' in json_result:
         if json_result['status'] == 404:
-            return({'status':404})
+            return {}
 
     if json_result:
         reviews = json_result["reviews"]["docs"]
         # print(reviews)
 
         for review in reviews:
-            if 'purchase' in review:
-                if review['purchase'] == 'true':
-                    review_obj = DealerReview(name=review["name"], dealership=review["dealership"], review=review["review"],
-                                        purchase=review["purchase"], purchase_date=review["purchase_date"], car_make=review["car_make"],
-                                        car_model=review["car_model"], car_year=review["car_year"], sentiment=analyze_review_sentiments(review))
-                    results.append(review_obj)
-                else:
-                    review_obj = DealerReview(name=review["name"], dealership=review["dealership"], review=review["review"], 
-                                            purchase=review["purchase"], sentiment=analyze_review_sentiments(review))
-                    results.append(review_obj) 
-            else:
-                review_obj = DealerReview(name=review["name"], dealership=review["dealership"], review=review["review"], 
-                                            sentiment=analyze_review_sentiments(review))
-                results.append(review_obj)
+            review_obj = DealerReview(review=review, sentiment=analyze_review_sentiments(review))
+            results.append(review_obj)
 
     return results
 
@@ -146,4 +134,9 @@ def analyze_review_sentiments(dealerReview):
     return_analyzed_text = True
     
     json_result = get_request(url, apikey=apikey, text=text, language=language, version=version, features=feature, return_analyzed_text=return_analyzed_text)
+    
+    # print("######################")
+    # print(json_result['sentiment']['document']['label'])
+    # print("######################")
+
     return (json_result['sentiment']['document']['label'])
