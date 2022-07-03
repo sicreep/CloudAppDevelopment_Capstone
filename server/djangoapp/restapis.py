@@ -23,9 +23,6 @@ def get_request(url, **kwargs):
             params["return_analyzed_text"] = kwargs["return_analyzed_text"]
             response = requests.get(url, headers={'Content-Type': 'application/json'}, auth=HTTPBasicAuth('apikey', kwargs['apikey']),
                                     params=params)
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-            print(response)
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         else:
             response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
@@ -120,4 +117,4 @@ def analyze_review_sentiments(dealerReview):
     return_analyzed_text = True
     
     json_result = get_request(url, apikey=apikey, text=text, version=version, features=feature, return_analyzed_text=return_analyzed_text)
-
+    return (json_result['sentiment']['document']['label'])

@@ -100,7 +100,7 @@ def get_dealer_details(request, dealer_id):
         if 'status' in reviews:
             return HttpResponse(404)
 
-        reviewer_names = ' ~~  '.join([review.name for review in reviews])
+        reviewer_names = ' ~~  '.join([review.name + ": " + review.sentiment for review in reviews])
         # Return a list of dealer short name
         return HttpResponse(reviewer_names) 
 
