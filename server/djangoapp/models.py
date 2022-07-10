@@ -93,8 +93,8 @@ class DealerReview:
         self.dealership = kwargs['review']['dealership']
         self.review = kwargs['review']['review']
         
-        
-        self.purchase = kwargs['review']['purchase']
+        if 'purchase' in kwargs['review']:
+            self.purchase = kwargs['review']['purchase']
         
         if 'purchase_date' in kwargs['review']:
             self.purchase_date = kwargs['review']['purchase_date']
