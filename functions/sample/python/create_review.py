@@ -8,9 +8,8 @@ def main(dict):
         service = CloudantV1(authenticator=authenticator)
         service.set_service_url(dict['URL'])
     
-        if 'purchase' in dict['review']:
-            if dict['review']['purchase'] == True:
-                 review_doc = Document(
+        if 'purchase' in dict['review'] and dict['review']['purchase'] == True:
+                review_doc = Document(
                     name = dict['review']['name'],
                     dealership = int(dict['review']['dealership']),
                     review = dict['review']['review'],
@@ -20,23 +19,27 @@ def main(dict):
                     car_model = dict['review']['car_model'],
                     car_year = dict['review']['car_year']
                 )
+                response = service.post_document(db='reviews', document=review_doc).get_result()
+                return response
         else: 
             review_doc = Document(
                 name = dict['review']['name'],
                 dealership = int(dict['review']['dealership']),
                 review = dict['review']['review'],
             )
-    
-        response = service.post_document(db='reviews', document=review_doc).get_result()
+            response = service.post_document(db='reviews', document=review_doc).get_result()
+            return response
+        
+        # response = service.post_document(db='reviews', document=review_doc).get_result()
 
-        if response['ok'] == True:
-            return(response)
-        else:
-            result = {
-                'status' : 500,
-                'message' : 'Something went wrong.'
-            }
-            return(result)
+        # if response['ok'] == True:
+        #     return(response)
+        # else:
+        #     result = {
+        #         'status' : 500,
+        #         'message' : 'Something went wrong.'
+        #     }
+        #     return(result)
 
     else:
         result = {

@@ -56,10 +56,8 @@ class CarModel(models.Model):
 
     def __str__(self):
         return( "Name: " + self.name + ", " \
-                # "Car make: " + self.carMake + ", " \
                 "Type: " + self.carType + ", " \
         )
-        # return ("foo")
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
 class CarDealer:
@@ -94,6 +92,8 @@ class DealerReview:
         self.name = kwargs['review']['name']
         self.dealership = kwargs['review']['dealership']
         self.review = kwargs['review']['review']
+        
+        
         self.purchase = kwargs['review']['purchase']
         
         if 'purchase_date' in kwargs['review']:

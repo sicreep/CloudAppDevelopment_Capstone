@@ -44,10 +44,8 @@ def get_request(url, **kwargs):
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
 def post_request(url, json_payload, **kwargs):
+    response = dict()
     try:
-        print("~~~~~~~~~~~~~~~~~~")
-        print(json_payload)
-        print("~~~~~~~~~~~~~~~~~~")
 
         response = requests.post(url, params=kwargs, json=json_payload)
         print(json.loads(response.text))
@@ -99,9 +97,9 @@ def get_dealer_reviews_from_cf(url, **kwargs):
     # Call get_request with a URL parameter
     json_result = get_request(url, dealerId=kwargs['dealerId'])
 
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    print(json_result)
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    # print(json_result)
+    # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
     if 'status' in json_result:
         if json_result['status'] == 404:

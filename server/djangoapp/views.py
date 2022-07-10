@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
-from .models import CarMake, CarModel
+from .models import CarMake, CarModel, CarDealer
 from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -95,6 +95,7 @@ def get_dealer_details(request, dealer_id):
         url = "https://4eb88eae.eu-de.apigw.appdomain.cloud/api/review"
         # Get dealers from the URL
         context['reviews'] = get_dealer_reviews_from_cf(url = url, dealerId = dealer_id)
+        context['dealerId'] = dealer_id
 
         # Concat all dealer's short name
         if 'status' in context['reviews']:
@@ -106,18 +107,78 @@ def get_dealer_details(request, dealer_id):
 # def add_review(request, dealer_id):
 def add_review(request, dealer_id):
     user = request.user
-    url = 'https://4eb88eae.eu-de.apigw.appdomain.cloud/api/review'
 
     # if request.method == "POST" and user.is_authenticated:
-    if request.method == "POST":
+    if request.method == "GET":
+        context = dict()
+        context['dealerId'] = dealer_id
+        # dealer name missing
+        url = "https://4eb88eae.eu-de.apigw.appdomain.cloud/api/dealership"
+        dealerships = get_dealers_from_cf(url)
+
+       
+        for dealer in dealerships:
+            if dealer.id == dealer_id:
+                dealer_name = dealer.full_name
+                break
+
+        context['dealer_name'] = dealer_name
+        # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        # print(dealer_name)
+        # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
+        # get car models
+        cars = CarModel.objects.all().filter(dealerId=dealer_id)
+        # error when empty...
+        # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        # print(cars)
+        # print(cars[0].carMake.name)
+        # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        
+
+        context['cars'] = cars
+        # context('dealer_name')
+
+        return render(request, 'djangoapp/add_review.html', context)
+    elif request.method == "POST":
+        url = 'https://4eb88eae.eu-de.apigw.appdomain.cloud/api/review'
+
+        # >>>>>>>>>>>>>>
+        # print(request.POST['content'])
+        # print(request.POST['purchasecheck'])
+        # print(request.POST['car'])
+        # carmodel = CarModel.objects.all().filter(id = request.POST['car'])
+        # print(carmodel[0].name)
+        # print(carmodel[0].carMake.name)
+        # print(carmodel[0].year)
+        # print(request.POST['purchasedate'])
+        # print("~~")
+        # print(dealer_id)
+        # print("~~")
+        # print(user.first_name + ' ' + user.last_name)
+        # print( request.POST['purchasedate'] )
+        # return False
+
         review = dict()
-        review['name'] = 'Lord Foo Bar'
-        review["time"] = datetime.utcnow().isoformat()
-        review["dealership"] = 15
-        review["review"] = "This is a great car dealer"
+        review['name'] = user.first_name + ' ' + user.last_name
+        review["dealership"] = dealer_id
+        review["review"] = request.POST['content']
+
+        purchasecheck = request.POST.get('purchasecheck', False) 
+        if purchasecheck == "on":
+            purchasecheck = True
+        review["purchase"] = purchasecheck
+        
+        if purchasecheck == True and request.POST['car'] != '':
+            carmodel = CarModel.objects.all().filter(id = request.POST['car'])
+            review["purchase_date"] = request.POST['purchasedate']
+            review["car_make"] = carmodel[0].carMake.name
+            review["car_model"] = carmodel[0].name
+            review["car_year"] = carmodel[0].year.strftime("%Y")
 
         json_payload = dict()
-        json_payload['review'] = review
+        json_payload["review"] = review
+
         response = post_request(url, json_payload, dealerId=dealer_id)
         return HttpResponse(response)
     else:
