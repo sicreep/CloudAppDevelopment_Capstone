@@ -21,7 +21,7 @@ async function main(params) {
         let docList = await cloudant.postFind({
             db: 'dealerships',
             selector: selector,
-            fields: ["id","city","state","st","address","zip","lat","long"],
+            fields: ["id","city","state","st","address","zip","lat","long","full_name","short_name"],
         });
         
         if (docList.result.docs.length == 0) {
