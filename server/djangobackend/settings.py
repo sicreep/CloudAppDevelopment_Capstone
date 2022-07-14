@@ -27,8 +27,9 @@ DEBUG = True
 
 APPEND_SLASH = True
 
-ALLOWED_HOSTS = ["localhost","cloudapp-p90.eu-de.cf.appdomain.cloud"]
+ALLOWED_HOSTS = ["localhost","cloudapp-p90.eu-de.cf.appdomain.cloud",'https://matthiasporz-8000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai']
 
+CSRF_TRUSTED_ORIGINS = ['https://matthiasporz-8000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai','https://*.127.0.0.1', 'https://us.icr.io','https://de.icr.io']
 
 # Application definition
 
